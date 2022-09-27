@@ -15,7 +15,7 @@
 		backend-type = "raw";
 		backend = <&backend_update_eeprom>;
 		backend-storage-type = "direct";
-		backend-stridesize = <54>;
+		backend-stridesize = <58>;
 		status = "disabled";
 
 		bootstate {
@@ -60,6 +60,25 @@
 				ok@18 {
 					reg = <0x18 0x4>;
 					type = "uint32";
+					default = <0>;
+				};
+			};
+			system2 {
+				#address-cells = <1>;
+				#size-cells = <1>;
+				remaining_attempts {
+					reg = <0x1c 0x1>;
+					type = "uint8";
+					default = <1>;
+				};
+				priority {
+					reg = <0x1d 0x1>;
+					type = "uint8";
+					default = <5>;
+				};
+				ok {
+					reg = <0x1e 0x1>;
+					type = "uint8";
 					default = <0>;
 				};
 			};
