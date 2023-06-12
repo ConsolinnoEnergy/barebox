@@ -1,0 +1,111 @@
+// SPDX-License-Identifier: (GPL-2.0-or-later OR MIT)
+
+/dts-v1/;
+#ifdef CONFIG_BOOTM_FITIMAGE_PUBKEY
+#include CONFIG_BOOTM_FITIMAGE_PUBKEY
+#endif
+#include <arm/nxp/imx/imx6ull.dtsi>
+#include "imx6ul-phytec-phycore-som.dtsi"
+#include "imx6ul-phytec-state.dtsi"
+
+#include <dt-bindings/leds/common.h>
+
+/ {
+	model = "consolinno leaflet 1u0022";
+	compatible = "consolinno,imx6ull-1u0022", "phytec,imx6ull-pcl063-emmc", "fsl,imx6ull";
+};
+
+&iomuxc {
+	pinctrl-names = "default";
+
+	pinctrl_boardver: boardvergrp {
+		fsl,pins = <
+			MX6UL_PAD_CSI_DATA01__GPIO4_IO22		0xa0b0 /* BOARD_VAR_0 */
+			MX6UL_PAD_CSI_DATA02__GPIO4_IO23		0xa0b0 /* BOARD_VAR_0 */
+			MX6UL_PAD_CSI_DATA03__GPIO4_IO24		0xa0b0 /* BOARD_VAR_0 */
+		>;
+	};
+
+	pinctrl_enet2: enet2grp {		/* TODO: verify me! */
+		fsl,pins = <
+			MX6UL_PAD_ENET2_RX_EN__ENET2_RX_EN		0x1b0b0
+			MX6UL_PAD_ENET2_RX_ER__ENET2_RX_ER		0x1b0b0
+			MX6UL_PAD_ENET2_RX_DATA0__ENET2_RDATA00		0x1b0b0
+			MX6UL_PAD_ENET2_RX_DATA1__ENET2_RDATA01		0x1b0b0
+			MX6UL_PAD_ENET2_TX_EN__ENET2_TX_EN		0x1b010
+			MX6UL_PAD_ENET2_TX_DATA0__ENET2_TDATA00		0x1b010
+			MX6UL_PAD_ENET2_TX_DATA1__ENET2_TDATA01		0x1b010
+			MX6UL_PAD_ENET2_TX_CLK__ENET2_REF_CLK2		0x4001b010
+		>;
+	};
+
+	pinctrl_ecspi1: ecspi1grp {		/* TODO */
+		fsl,pins = <
+			MX6UL_PAD_CSI_DATA04__ECSPI1_SCLK		0x0b0b0 /* [121] SOM_CLK */
+			MX6UL_PAD_CSI_DATA06__ECSPI1_MOSI		0x0b0b0 /* [123] SOM_MOSI */
+			MX6UL_PAD_CSI_DATA05__ECSPI1_SS0		0x0b0b0 /* [122] SOM_CS */
+			MX6UL_PAD_CSI_DATA07__ECSPI1_MISO		0x0b0b0 /* [124] SOM_MISO */
+		>;
+	};
+};
+
+&fec1 {
+	status = "okay";
+
+	/* for barebox compatibility */
+	mdio: mdio {};
+};
+
+&fec2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_enet2>;
+	phy-mode = "rmii";
+	phy-handle = <&ethphy2>;
+
+	/* TODO: does not work yet */
+
+	status = "okay";
+};
+
+&mdio {
+	ethphy2: ethernet-phy@2 {
+		reg = <2>;
+		micrel,led-mode = <1>;
+		clocks = <&clks IMX6UL_CLK_ENET2_REF>;
+		clock-names = "rmii-ref";
+		status = "okay";
+	};
+};
+
+&ecspi1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_ecspi1>;
+	status = "okay";
+
+	tpm: tpm@0 {
+		compatible = "tpm";
+		reg = <0>;
+	};
+};
+
+&uart1 {
+	status = "okay";
+};
+
+&i2c1 {
+	status = "okay";
+
+	/* rtc + nfc */
+};
+
+&state {
+        status = "okay";
+};
+
+&usdhc2 {
+	status = "okay";
+};
+
+&usbotg1 {
+	status = "okay";
+};

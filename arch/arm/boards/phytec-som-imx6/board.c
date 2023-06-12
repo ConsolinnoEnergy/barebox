@@ -326,6 +326,10 @@ static struct board_data imx6ul_pcl063_emmc = {
 	.flags = IS_PHYCORE_UL | HAS_MMC1,
 };
 
+static struct board_data imx6ul_consolinno_1u0022 = {
+	.flags = IS_PHYCORE_UL | HAS_MMC1 | HAS_NO_MMC0 | NO_PLAIN_MMC_BOOT | NO_ENVIRONMENT,
+};
+
 
 static const struct of_device_id physom_imx6_match[] = {
 	{
@@ -361,6 +365,9 @@ static const struct of_device_id physom_imx6_match[] = {
 	}, {
 		.compatible = "phytec,imx6ul-pcl063-emmc",
 		.data = &imx6ul_pcl063_emmc,
+	}, {
+		.compatible = "consolinno,imx6ull-1u0022",
+		.data = &imx6ul_consolinno_1u0022,
 	},
 	{ /* Sentinel */ },
 };
