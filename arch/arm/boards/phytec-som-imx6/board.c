@@ -154,6 +154,7 @@ err_out:
 #define HAS_MMC1	BIT(5)
 #define HAS_NO_MMC0	BIT(6)
 #define NO_PLAIN_MMC_BOOT BIT(7)
+#define NO_ENVIRONMENT	BIT(8)
 
 struct board_data {
 	unsigned flags;
@@ -238,15 +239,14 @@ static int physom_imx6_probe(struct device *dev)
 		break;
 	}
 
-	if (environment_path) {
+	if (!(flags & NO_ENVIRONMENT) && environment_path) {
 		ret = of_device_enable_path(environment_path);
 		if (ret < 0)
 			pr_warn("Failed to enable environment partition '%s' (%d)\n",
 				environment_path, ret);
-		free(environment_path);
+		pr_notice("Using environment in %s\n", envdev);
 	}
-
-	pr_notice("Using environment in %s\n", envdev);
+	free(environment_path);
 
 	if (flags & HAS_MMC3) {
 		imx6_bbu_internal_mmc_register_handler("mmc3",
