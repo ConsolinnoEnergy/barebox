@@ -152,6 +152,7 @@ err_out:
 #define IS_PHYCORE_UL	BIT(3)
 #define HAS_MMC3	BIT(4)
 #define HAS_MMC1	BIT(5)
+#define HAS_NO_MMC0	BIT(6)
 
 struct board_data {
 	unsigned flags;
@@ -209,9 +210,9 @@ static int physom_imx6_probe(struct device *dev)
 		phy_register_fixup_for_uid(PHY_ID_KSZ8081, MICREL_PHY_ID_MASK,
 				ksz8081_phy_fixup);
 
-		imx6_bbu_internal_mmc_register_handler("mmc0",
-						"/dev/mmc0", 0);
-
+		if (!(flags & HAS_NO_MMC0))
+			imx6_bbu_internal_mmc_register_handler("mmc0",
+							       "/dev/mmc0", 0);
 	} else {
 		return -EINVAL;
 	}
