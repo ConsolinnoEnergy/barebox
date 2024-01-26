@@ -13,6 +13,15 @@
 / {
 	model = "consolinno leaflet 1u0022";
 	compatible = "consolinno,imx6ull-1u0022", "phytec,imx6ull-pcl063-emmc", "fsl,imx6ull";
+
+	chosen {
+		/* not used and because it might break security, remove potential
+		   environment storage */
+
+		/delete-node/environment-nand;
+		/delete-node/environment-sd1;
+		/delete-node/environment-sd2;
+	};
 };
 
 &iomuxc {
