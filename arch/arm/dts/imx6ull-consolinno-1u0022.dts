@@ -112,6 +112,9 @@
 
 &usdhc2 {
 	status = "okay";
+
+	/delete-node/partition@0;
+	/delete-node/partition@e0000;
 };
 
 &usbotg1 {
