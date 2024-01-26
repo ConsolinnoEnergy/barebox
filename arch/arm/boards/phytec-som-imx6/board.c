@@ -153,6 +153,7 @@ err_out:
 #define HAS_MMC3	BIT(4)
 #define HAS_MMC1	BIT(5)
 #define HAS_NO_MMC0	BIT(6)
+#define NO_PLAIN_MMC_BOOT BIT(7)
 
 struct board_data {
 	unsigned flags;
@@ -254,11 +255,14 @@ static int physom_imx6_probe(struct device *dev)
 		imx6_bbu_internal_mmcboot_register_handler("mmc3-boot",
 						"mmc3", 0);
 	} else if (flags & HAS_MMC1) {
-		imx6_bbu_internal_mmc_register_handler("mmc1",
-						"/dev/mmc1",
-						BBU_HANDLER_FLAG_DEFAULT);
-		imx6_bbu_internal_mmcboot_register_handler("mmc1-boot",
-						"mmc1", 0);
+		if (!(flags & NO_PLAIN_MMC_BOOT))
+			imx6_bbu_internal_mmc_register_handler("mmc1",
+							       "/dev/mmc1",
+							       BBU_HANDLER_FLAG_DEFAULT);
+
+		imx6_bbu_internal_mmcboot_register_handler(
+			"mmc1-boot", "mmc1",
+			(flags & NO_PLAIN_MMC_BOOT) ? BBU_HANDLER_FLAG_DEFAULT : 0);
 	} else {
 		imx6_bbu_nand_register_handler("nand", BBU_HANDLER_FLAG_DEFAULT);
 	}
